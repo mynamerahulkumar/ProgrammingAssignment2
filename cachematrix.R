@@ -1,24 +1,66 @@
+##in makeCacheMatrix:-
+##set function sets values to the matrix and thereby set the inverse value to null
+##get function is used to retrieve the matrix with its values
+##setinverse function is used to set the inverse value to the matrix
+##getinverse function is use to retrieve the inverse value of the matrix 
+
+##in cacheSolve:- 
+## I am accessing the getinverse function to retrieve the inverse of the matrix
+##if the inverse is null then I am setting the inverse by using the solve function
+## if inverse is not null then i am displaying it and returning from the function
+
+
+##returns a list of functions to set a matrix, to setInverse of it, get the matrix and get the inverse
 makeCacheMatrix <- function(x = matrix()) {
-  inv <- NULL
-  set <- function(y) {
-    x <<- y
-    inv <<- NULL
+  inverse<-NULL
+  if(!is.matrix(x))   # if the argument passed is not a matrix coercing it to be a matrix
+    x<-as.matrix(x)
+  set<-function(x1=0,row=0,col=0){ 
+    #to change the values of the matrix call this function, if no argument is passed
+    # it creates a dummy matrix
+    x<<-matrix(x1,row,col)
+    inverse<<-NULL
   }
-  get <- function() x
-  setinverse <- function(inverse) inv <<- inverse
-  getinverse <- function() inv
-  list(set=set, get=get, setinverse=setinverse, getinverse=getinverse)
+  setinverse<-function(i){
+  
+    inverse<<-i
+    
+  }
+  getinverse<-function(){
+    #retrieve the inverse value of the matrix
+    inverse
+  }
+  get<-function(){
+    #retrieve the entire matrix
+    x
+  }
+  
+  list("set"=set,"get"=get,"setInverse"=setinverse,"getInverse"=getinverse)
+
 }
 
 
+##returns the inverse of the matrix after checking whether the inverse exists in the cache or not
+
 cacheSolve <- function(x, ...) {
-  inv <- x$getinverse()
-  if(!is.null(inv)) {
-    message("getting cached data.")
-    return(inv)
+        ## Return a matrix that is the inverse of 'x'
+  value<-x$getInverse()
+  if(!(is.null(value))){
+    #checking whether inverse is null or not, if not null return the inverse value
+    message ("Displaying cached value...")
+    return(value)
+    
   }
-  data <- x$get()
-  inv <- solve(data)
-  x$setinverse(inv)
-  inv
+  else {
+    #if inverse was null then calculating inverse and returning that after setting the value in setinverse() function
+    matrix1<-x$get()
+    if(nrow(matrix1)==ncol(matrix1)){
+      inv<-solve(matrix1)
+      x$setInverse(inv)
+      return (inv)
+    }
+    
+    return(message("Inverse not possible."))
+    
+  }
 }
